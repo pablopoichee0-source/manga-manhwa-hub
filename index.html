@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MoonWave | Manga & Manhwa</title>
+    <meta name="description" content="Descubre mangas y manhwas populares, novedades y favoritos en una experiencia moderna." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <div class="logo-mark">M</div>
+          <div>
+            <p class="brand-name">MoonWave</p>
+            <span class="brand-sub">Manga & Manhwa</span>
+          </div>
+        </div>
+
+        <nav class="main-nav" aria-label="Navegación principal">
+          <a href="#inicio">Inicio</a>
+          <a href="#explorar">Explorar</a>
+          <a href="#trending">Trending</a>
+          <a href="#biblioteca">Biblioteca</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="ghost-btn">Iniciar sesión</button>
+          <button class="primary-btn">Comenzar</button>
+        </div>
+      </header>
+
+      <main id="inicio">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="eyebrow">Novedades del mes</span>
+            <h1>Tu próxima obsesión empieza aquí.</h1>
+            <p>
+              Explora mangas y manhwas con historias épicas, romance intenso,
+              acción brutal y fantasía de otro mundo.
+            </p>
+
+            <div class="hero-actions">
+              <button class="primary-btn large">Ver colección</button>
+              <button class="secondary-btn large">Explorar gratis</button>
+            </div>
+
+            <ul class="stats">
+              <li><strong>120K+</strong><span>lectores activos</span></li>
+              <li><strong>1.8K</strong><span>títulos disponibles</span></li>
+              <li><strong>4.9/5</strong><span>valoración</span></li>
+            </ul>
+          </div>
+
+          <div class="hero-visual" aria-label="Portada destacada">
+            <div class="featured-card">
+              <div class="cover-image cover-one"></div>
+              <div class="featured-info">
+                <div>
+                  <span class="mini-tag">Trending</span>
+                  <h2>Solo Leveling</h2>
+                </div>
+                <div class="rating-row">
+                  <span>★ 4.9</span>
+                  <span>•</span>
+                  <span>Action</span>
+                </div>
+              </div>
+            </div>
+            <div class="mini-panel">
+              <div class="mini-cover cover-two"></div>
+              <div>
+                <p>Continuar leyendo</p>
+                <strong>Omniscient Reader</strong>
+                <span>Capítulo 23</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="explorar" class="library-panel">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Explora</span>
+              <h2>Biblioteca recomendada</h2>
+            </div>
+            <div class="search-box">
+              <span>⌕</span>
+              <input id="searchInput" type="text" placeholder="Buscar manga o manhwa..." aria-label="Buscar manga o manhwa" />
+            </div>
+          </div>
+
+          <div class="filter-row" id="filterRow" aria-label="Filtros">
+            <button class="filter-btn active" data-filter="all">Todo</button>
+            <button class="filter-btn" data-filter="action">Acción</button>
+            <button class="filter-btn" data-filter="fantasy">Fantasía</button>
+            <button class="filter-btn" data-filter="romance">Romance</button>
+            <button class="filter-btn" data-filter="school">School</button>
+            <button class="filter-btn" data-filter="dark">Dark</button>
+          </div>
+
+          <div id="seriesGrid" class="series-grid" aria-live="polite"></div>
+        </section>
+
+        <section id="trending" class="trending-wrap">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">Trending</span>
+              <h2>Lo más popular</h2>
+            </div>
+          </div>
+
+          <div class="trending-list" id="trendingList"></div>
+        </section>
+
+        <section id="biblioteca" class="featured-story">
+          <div class="story-card">
+            <div class="story-cover cover-three"></div>
+            <div class="story-content">
+              <span class="eyebrow accent">Recomendación especial</span>
+              <h3>Eleceed</h3>
+              <p>
+                Un exorcista con un poder imposible, un rival despiadado y una aventura con energía pura.
+                Si te gusta la combinación de acción, velocidad y personajes carismáticos, esta historia es para ti.
+              </p>
+              <div class="story-meta">
+                <span>★ 4.8</span>
+                <span>•</span>
+                <span>Action / Fantasy</span>
+                <span>•</span>
+                <span>Cap. 114</span>
+              </div>
+              <button class="primary-btn">Leer ahora</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
