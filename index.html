@@ -4,20 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MoonWave | Manga & Manhwa</title>
-    <meta name="description" content="Descubre mangas y manhwas populares, novedades y favoritos en una experiencia moderna." />
+    <meta
+      name="description"
+      content="Explora manga y manhwa con una experiencia moderna, buscador, filtros y lector integrado."
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="page-shell">
       <header class="topbar">
-        <div class="brand-wrap">
+        <div class="brand-wrap" aria-label="MoonWave logo">
           <div class="logo-mark">M</div>
           <div>
             <p class="brand-name">MoonWave</p>
-            <span class="brand-sub">Manga & Manhwa</span>
+            <span class="brand-sub">Manga &amp; Manhwa</span>
           </div>
         </div>
 
@@ -45,7 +51,7 @@
             </p>
 
             <div class="hero-actions">
-              <button class="primary-btn large">Ver colección</button>
+              <button class="primary-btn large" id="featuredReadBtn">Ver colección</button>
               <button class="secondary-btn large">Explorar gratis</button>
             </div>
 
@@ -90,7 +96,12 @@
             </div>
             <div class="search-box">
               <span>⌕</span>
-              <input id="searchInput" type="text" placeholder="Buscar manga o manhwa..." aria-label="Buscar manga o manhwa" />
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Buscar manga o manhwa..."
+                aria-label="Buscar manga o manhwa"
+              />
             </div>
           </div>
 
@@ -134,11 +145,80 @@
                 <span>•</span>
                 <span>Cap. 114</span>
               </div>
-              <button class="primary-btn">Leer ahora</button>
+              <button class="primary-btn" data-open-series="eleceed">Leer ahora</button>
             </div>
           </div>
         </section>
       </main>
+    </div>
+
+    <div id="detailModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close-modal="true"></div>
+      <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <button class="close-modal" aria-label="Cerrar" data-close-modal="true">×</button>
+        <div class="detail-layout">
+          <div class="detail-cover" id="detailCover"></div>
+          <div class="detail-content">
+            <div class="detail-header-row">
+              <div>
+                <span class="eyebrow accent" id="detailStatus">Ongoing</span>
+                <h3 id="detailTitle">Título</h3>
+              </div>
+              <span class="detail-rating" id="detailRating">★ 4.9</span>
+            </div>
+            <p class="detail-description" id="detailDescription"></p>
+
+            <div class="detail-stats">
+              <div>
+                <span>Autor</span>
+                <strong id="detailAuthor">-</strong>
+              </div>
+              <div>
+                <span>Género</span>
+                <strong id="detailGenre">-</strong>
+              </div>
+              <div>
+                <span>Capítulos</span>
+                <strong id="detailChapters">-</strong>
+              </div>
+            </div>
+
+            <div class="detail-actions">
+              <button class="primary-btn" id="readSelectedBtn">Leer ahora</button>
+              <button class="secondary-btn" id="favoriteBtn">Guardar</button>
+            </div>
+
+            <div class="chapter-panel">
+              <h4>Capítulos</h4>
+              <div id="chapterList" class="chapter-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="readerModal" class="modal hidden" aria-hidden="true">
+      <div class="reader-backdrop" data-close-reader="true"></div>
+      <div class="reader-panel" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+        <div class="reader-topbar">
+          <div>
+            <span class="eyebrow">Lector</span>
+            <h3 id="readerTitle">Capítulo</h3>
+          </div>
+          <button class="close-modal" data-close-reader="true" aria-label="Cerrar lector">×</button>
+        </div>
+
+        <div class="reader-toolbar">
+          <button class="secondary-btn" id="prevChapterBtn">← Anterior</button>
+          <div class="chapter-select-wrap">
+            <label for="chapterSelect">Capítulo</label>
+            <select id="chapterSelect"></select>
+          </div>
+          <button class="secondary-btn" id="nextChapterBtn">Siguiente →</button>
+        </div>
+
+        <div id="readerPages" class="reader-pages"></div>
+      </div>
     </div>
 
     <script src="script.js"></script>
