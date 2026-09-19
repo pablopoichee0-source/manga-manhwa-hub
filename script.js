@@ -289,10 +289,35 @@ const trending = [
   { title: "My Love Mix-Up!", rank: 6, readers: "980K" }
 ];
 
+const STORAGE_KEYS = {
+  user: "moonwave-user",
+  favorites: "moonwave-favorites",
+  reads: "moonwave-progress"
+};
+
 const seriesGrid = document.getElementById("seriesGrid");
 const trendingList = document.getElementById("trendingList");
 const searchInput = document.getElementById("searchInput");
 const filterButtons = document.querySelectorAll(".filter-btn");
+const authButton = document.getElementById("authButton");
+const profilePanel = document.getElementById("profilePanel");
+const guestPrompt = document.getElementById("guestPrompt");
+const profileTitle = document.getElementById("profileTitle");
+const userName = document.getElementById("userName");
+const favoriteCount = document.getElementById("favoriteCount");
+const readingCount = document.getElementById("readingCount");
+const favoritesList = document.getElementById("favoritesList");
+const continueList = document.getElementById("continueList");
+const favoriteBadge = document.getElementById("favoriteBadge");
+const progressBadge = document.getElementById("progressBadge");
+const authModal = document.getElementById("authModal");
+const authForm = document.getElementById("authForm");
+const authEmail = document.getElementById("authEmail");
+const authPassword = document.getElementById("authPassword");
+const registerNameWrap = document.getElementById("registerNameWrap");
+const registerName = document.getElementById("registerName");
+const authTitle = document.getElementById("authTitle");
+const authToggleButtons = document.querySelectorAll(".toggle-btn");
 
 const detailModal = document.getElementById("detailModal");
 const detailCover = document.getElementById("detailCover");
@@ -308,10 +333,71 @@ const readerModal = document.getElementById("readerModal");
 const readerTitle = document.getElementById("readerTitle");
 const chapterSelect = document.getElementById("chapterSelect");
 const readerPages = document.getElementById("readerPages");
+const favoriteBtn = document.getElementById("favoriteBtn");
 
 let activeFilter = "all";
 let selectedSeriesId = null;
 let selectedChapterIndex = 0;
+let authMode = "login";
+
+function readStorage(key) {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function getCurrentUser() {
+  return readStorage(STORAGE_KEYS.user);
+}
+
+function setCurrentUser(user) {
+  if (user) {
+    writeStorage(STORAGE_KEYS.user, user);
+  } else {
+    localStorage.removeItem(STORAGE_KEYS.user);
+  }
+  renderAuthState();
+}
+
+function getFavorites() {
+  return readStorage(STORAGE_KEYS.favorites) || [];
+}
+
+function setFavorites(list) {
+  writeStorage(STORAGE_KEYS.favorites, list);
+  renderProfile();
+}
+
+function getProgressMap() {
+  return readStorage(STORAGE_KEYS.reads) || {};
+}
+
+function setProgressMap(map) {
+  writeStorage(STORAGE_KEYS.reads, map);
+  renderProfile();
+}
+
+function isFavorite(seriesId) {
+  return getFavorites().includes(seriesId);
+}
+
+function toggleFavorite(seriesId) {
+  const current = getFavorites();
+  const next = current.includes(seriesId)
+    ? current.filter((id) => id !== seriesId)
+    : [...current, seriesId];
+  setFavorites(next);
+  if (favoriteBtn) {
+    favoriteBtn.textContent = next.includes(seriesId) ? "Guardado" : "Guardar";
+  }
+}
 
 function renderSeries(items) {
   seriesGrid.innerHTML = items
@@ -403,6 +489,11 @@ function openDetailModal(seriesId) {
     )
     .join("");
 
+  const fav = isFavorite(seriesId);
+  if (favoriteBtn) {
+    favoriteBtn.textContent = fav ? "Guardado" : "Guardar";
+  }
+
   detailModal.classList.remove("hidden");
   detailModal.setAttribute("aria-hidden", "false");
 }
@@ -419,7 +510,9 @@ function openReaderModal(seriesId, chapterIndex = 0) {
   selectedSeriesId = seriesId;
   selectedChapterIndex = chapterIndex;
 
-  readerTitle.textContent = `${item.title} • Cap. ${item.chaptersList[chapterIndex].number}`;
+  const safeIndex = Math.max(0, Math.min(item.chaptersList.length - 1, chapterIndex));
+  selectedChapterIndex = safeIndex;
+  readerTitle.textContent = `${item.title} • Cap. ${item.chaptersList[safeIndex].number}`;
 
   chapterSelect.innerHTML = item.chaptersList
     .map(
@@ -428,9 +521,14 @@ function openReaderModal(seriesId, chapterIndex = 0) {
       `
     )
     .join("");
-  chapterSelect.value = String(chapterIndex);
+  chapterSelect.value = String(safeIndex);
 
-  renderReaderPages(item, chapterIndex);
+  renderReaderPages(item, safeIndex);
+
+  const progress = getProgressMap();
+  progress[seriesId] = safeIndex;
+  setProgressMap(progress);
+
   readerModal.classList.remove("hidden");
   readerModal.setAttribute("aria-hidden", "false");
   closeDetailModal();
@@ -472,6 +570,160 @@ function goToChapter(direction) {
     selectedChapterIndex = nextIndex;
     openReaderModal(item.id, selectedChapterIndex);
   }
+}
+
+function renderAuthState() {
+  const user = getCurrentUser();
+  const isLogged = Boolean(user);
+
+  if (isLogged) {
+    authButton.textContent = `Hola, ${user.name || user.email.split("@")[0]}`;
+    profileTitle.textContent = `Bienvenido, ${user.name || "lector"}`;
+    userName.textContent = user.name || user.email.split("@")[0];
+  } else {
+    authButton.textContent = "Iniciar sesión";
+    profileTitle.textContent = "Accede a tu cuenta";
+    userName.textContent = "Usuario";
+  }
+
+  profilePanel.classList.toggle("hidden", !isLogged);
+  guestPrompt.classList.toggle("hidden", isLogged);
+}
+
+function renderProfile() {
+  const user = getCurrentUser();
+  if (!user) {
+    renderAuthState();
+    return;
+  }
+
+  const favorites = getFavorites();
+  const progressMap = getProgressMap();
+  const inProgress = Object.entries(progressMap).filter(([seriesId]) => {
+    const item = series.find((entry) => entry.id === seriesId);
+    return Boolean(item && item.chaptersList?.length);
+  });
+
+  favoriteCount.textContent = String(favorites.length);
+  readingCount.textContent = String(inProgress.length);
+  favoriteBadge.textContent = String(favorites.length);
+  progressBadge.textContent = String(inProgress.length);
+
+  const favoriteItems = favorites
+    .map((seriesId) => series.find((entry) => entry.id === seriesId))
+    .filter(Boolean);
+
+  favoritesList.innerHTML = favoriteItems.length
+    ? favoriteItems
+        .map(
+          (item) => `
+            <div class="list-item">
+              <div class="list-cover" style="background-image: url('${item.image}')"></div>
+              <div class="list-copy">
+                <h5>${item.title}</h5>
+                <p>${item.genre} • ${item.status}</p>
+              </div>
+              <button class="secondary-btn" data-read-id="${item.id}">Leer</button>
+            </div>
+          `
+        )
+        .join("")
+    : '<div class="list-item"><div class="list-copy"><h5>No tienes favoritos aún</h5><p>Guarda tus mangas preferidos.</p></div></div>';
+
+  const continueItems = inProgress
+    .map(([seriesId, chapterIndex]) => {
+      const item = series.find((entry) => entry.id === seriesId);
+      if (!item) return null;
+      const chapter = item.chaptersList[Number(chapterIndex)] || item.chaptersList[0];
+      return {
+        seriesId,
+        title: item.title,
+        chapter: chapter?.number || 1,
+        image: item.image,
+        genre: item.genre
+      };
+    })
+    .filter(Boolean);
+
+  continueList.innerHTML = continueItems.length
+    ? continueItems
+        .map(
+          (item) => `
+            <div class="list-item">
+              <div class="list-cover" style="background-image: url('${item.image}')"></div>
+              <div class="list-copy">
+                <h5>${item.title}</h5>
+                <p>Cap. ${item.chapter} • ${item.genre}</p>
+              </div>
+              <button class="secondary-btn" data-read-id="${item.seriesId}">Continuar</button>
+            </div>
+          `
+        )
+        .join("")
+    : '<div class="list-item"><div class="list-copy"><h5>No tienes lectura reciente</h5><p>Empieza a leer un capítulo.</p></div></div>';
+
+  renderAuthState();
+}
+
+function openAuthModal() {
+  authModal.classList.remove("hidden");
+  authModal.setAttribute("aria-hidden", "false");
+}
+
+function closeAuthModal() {
+  authModal.classList.add("hidden");
+  authModal.setAttribute("aria-hidden", "true");
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  authToggleButtons.forEach((button) => {
+    const active = button.dataset.authMode === mode;
+    button.classList.toggle("active", active);
+  });
+
+  const isRegister = mode === "register";
+  registerNameWrap.classList.toggle("hidden", !isRegister);
+  authTitle.textContent = isRegister ? "Registrarse" : "Iniciar sesión";
+  authForm.querySelector(".auth-submit").textContent = isRegister ? "Crear cuenta" : "Entrar";
+}
+
+function handleAuthSubmit(event) {
+  event.preventDefault();
+
+  const email = authEmail.value.trim();
+  const password = authPassword.value.trim();
+  const name = registerName.value.trim();
+
+  if (!email || !password) return;
+
+  if (authMode === "register") {
+    const user = { email, name: name || email.split("@")[0], password };
+    setCurrentUser(user);
+    closeAuthModal();
+    authForm.reset();
+    setAuthMode("login");
+    return;
+  }
+
+  const existingUser = getCurrentUser();
+  if (existingUser && existingUser.email === email) {
+    setCurrentUser(existingUser);
+    closeAuthModal();
+    authForm.reset();
+    return;
+  }
+
+  const fallbackUser = { email, name: email.split("@")[0], password };
+  setCurrentUser(fallbackUser);
+  closeAuthModal();
+  authForm.reset();
+}
+
+function handleLogout() {
+  setCurrentUser(null);
+  localStorage.removeItem(STORAGE_KEYS.favorites);
+  localStorage.removeItem(STORAGE_KEYS.reads);
 }
 
 filterButtons.forEach((button) => {
@@ -524,19 +776,21 @@ chapterSelect.addEventListener("change", (event) => {
 
   selectedChapterIndex = Number(event.target.value);
   renderReaderPages(item, selectedChapterIndex);
+
+  const progress = getProgressMap();
+  progress[selectedSeriesId] = selectedChapterIndex;
+  setProgressMap(progress);
 });
 
 document.getElementById("prevChapterBtn").addEventListener("click", () => goToChapter(-1));
 document.getElementById("nextChapterBtn").addEventListener("click", () => goToChapter(1));
-
 document.getElementById("readSelectedBtn").addEventListener("click", () => {
   if (selectedSeriesId) openReaderModal(selectedSeriesId, 0);
 });
 
-document.getElementById("favoriteBtn").addEventListener("click", () => {
-  const button = document.getElementById("favoriteBtn");
-  const current = button.textContent;
-  button.textContent = current === "Guardar" ? "Guardado" : "Guardar";
+favoriteBtn.addEventListener("click", () => {
+  if (!selectedSeriesId) return;
+  toggleFavorite(selectedSeriesId);
 });
 
 document.querySelector("[data-open-series='eleceed']").addEventListener("click", () => {
@@ -547,5 +801,45 @@ document.getElementById("featuredReadBtn").addEventListener("click", () => {
   openReaderModal("solo-leveling", 0);
 });
 
+authButton.addEventListener("click", () => {
+  const user = getCurrentUser();
+  if (user) {
+    handleLogout();
+    return;
+  }
+  openAuthModal();
+});
+
+document.getElementById("guestLoginBtn").addEventListener("click", openAuthModal);
+
+authToggleButtons.forEach((button) => {
+  button.addEventListener("click", () => setAuthMode(button.dataset.authMode));
+});
+
+authForm.addEventListener("submit", handleAuthSubmit);
+
+document.querySelectorAll("[data-close-auth]").forEach((element) => {
+  element.addEventListener("click", closeAuthModal);
+});
+
+favoritesList.addEventListener("click", (event) => {
+  const readButton = event.target.closest("[data-read-id]");
+  if (readButton) {
+    openReaderModal(readButton.dataset.readId, 0);
+  }
+});
+
+continueList.addEventListener("click", (event) => {
+  const readButton = event.target.closest("[data-read-id]");
+  if (readButton) {
+    const progressMap = getProgressMap();
+    const seriesId = readButton.dataset.readId;
+    openReaderModal(seriesId, Number(progressMap[seriesId] || 0));
+  }
+});
+
 renderSeries(series);
 renderTrending();
+renderAuthState();
+renderProfile();
+setAuthMode("login");

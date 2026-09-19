@@ -6,7 +6,7 @@
     <title>MoonWave | Manga & Manhwa</title>
     <meta
       name="description"
-      content="Explora manga y manhwa con una experiencia moderna, buscador, filtros y lector integrado."
+      content="Explora manga y manhwa con una experiencia moderna, buscador, filtros, lector y biblioteca personal."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,10 +32,11 @@
           <a href="#explorar">Explorar</a>
           <a href="#trending">Trending</a>
           <a href="#biblioteca">Biblioteca</a>
+          <a href="#mi-biblioteca">Mi biblioteca</a>
         </nav>
 
         <div class="header-actions">
-          <button class="ghost-btn">Iniciar sesión</button>
+          <button id="authButton" class="ghost-btn">Iniciar sesión</button>
           <button class="primary-btn">Comenzar</button>
         </div>
       </header>
@@ -149,7 +150,89 @@
             </div>
           </div>
         </section>
+
+        <section id="mi-biblioteca" class="profile-wrap">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">Mi biblioteca</span>
+              <h2 id="profileTitle">Accede a tu cuenta</h2>
+            </div>
+          </div>
+
+          <div id="profilePanel" class="profile-panel hidden">
+            <div class="profile-card stats-card">
+              <span class="mini-label">Resumen</span>
+              <h3 id="userName">Usuario</h3>
+              <div class="mini-stats">
+                <div>
+                  <strong id="favoriteCount">0</strong>
+                  <span>favoritos</span>
+                </div>
+                <div>
+                  <strong id="readingCount">0</strong>
+                  <span>en progreso</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-card">
+              <div class="card-header-row">
+                <h4>Favoritos</h4>
+                <span id="favoriteBadge" class="badge">0</span>
+              </div>
+              <div id="favoritesList" class="list-stack"></div>
+            </div>
+
+            <div class="profile-card">
+              <div class="card-header-row">
+                <h4>Continuar leyendo</h4>
+                <span id="progressBadge" class="badge">0</span>
+              </div>
+              <div id="continueList" class="list-stack"></div>
+            </div>
+          </div>
+
+          <div id="guestPrompt" class="guest-prompt">
+            <p>Inicia sesión para guardar tus mangas favoritos y continuar desde donde te quedaste.</p>
+            <button id="guestLoginBtn" class="primary-btn">Iniciar sesión</button>
+          </div>
+        </section>
       </main>
+    </div>
+
+    <div id="authModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close-auth="true"></div>
+      <div class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+        <button class="close-modal" aria-label="Cerrar modal" data-close-auth="true">×</button>
+        <div class="auth-header">
+          <span class="eyebrow accent">Cuenta</span>
+          <h3 id="authTitle">Iniciar sesión</h3>
+        </div>
+
+        <div class="auth-switcher">
+          <button class="toggle-btn active" data-auth-mode="login">Iniciar sesión</button>
+          <button class="toggle-btn" data-auth-mode="register">Registrarse</button>
+        </div>
+
+        <form id="authForm" class="auth-form">
+          <div id="registerNameWrap" class="field hidden">
+            <label for="registerName">Nombre</label>
+            <input id="registerName" type="text" placeholder="Tu nombre" />
+          </div>
+
+          <div class="field">
+            <label for="authEmail">Correo</label>
+            <input id="authEmail" type="email" placeholder="tu@email.com" required />
+          </div>
+
+          <div class="field">
+            <label for="authPassword">Contraseña</label>
+            <input id="authPassword" type="password" placeholder="••••••••" required />
+          </div>
+
+          <button type="submit" class="primary-btn auth-submit">Entrar</button>
+        </form>
+      </div>
     </div>
 
     <div id="detailModal" class="modal hidden" aria-hidden="true">
