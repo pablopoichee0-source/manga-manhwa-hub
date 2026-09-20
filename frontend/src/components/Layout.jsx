@@ -15,6 +15,7 @@ export default function Layout() {
         <nav className="nav">
           <NavLink to="/">Inicio</NavLink>
           <NavLink to="/anime">Anime</NavLink>
+          <NavLink to="/top-anime">Top</NavLink>
           <NavLink to="/noticias">Noticias</NavLink>
           <NavLink to="/resenas">Reseñas</NavLink>
           {user && <NavLink to="/profile">Perfil</NavLink>}

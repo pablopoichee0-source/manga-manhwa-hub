@@ -4,6 +4,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import HomePage from './pages/HomePage';
+import CatalogPage from './pages/CatalogPage';
+import TopAnimePage from './pages/TopAnimePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
@@ -23,7 +25,8 @@ function AppRoutes() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/anime" element={<HomePage />} />
+        <Route path="/anime" element={<CatalogPage />} />
+        <Route path="/top-anime" element={<TopAnimePage />} />
         <Route path="/noticias" element={<NewsPage />} />
         <Route path="/resenas" element={<ReviewsPage />} />
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
