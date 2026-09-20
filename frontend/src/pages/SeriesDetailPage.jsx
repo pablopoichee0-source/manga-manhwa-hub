@@ -70,11 +70,11 @@ export default function SeriesDetailPage() {
   };
 
   if (loading) {
-    return <div className="loading-shell">Loading series...</div>;
+    return <div className="loading-shell">Cargando anime...</div>;
   }
 
   if (!series) {
-    return <div className="error-box">Series not found.</div>;
+    return <div className="error-box">Anime no encontrado.</div>;
   }
 
   return (
@@ -88,7 +88,7 @@ export default function SeriesDetailPage() {
           <div className="meta-row">
             <span>⭐ {series.score.toFixed(1)}</span>
             <span>{series.status}</span>
-            <span>{series.chapters.length} chapters</span>
+            <span>{series.chapters.length} episodios</span>
           </div>
           <div className="tags">
             {series.genres.map((genre) => (
@@ -98,7 +98,7 @@ export default function SeriesDetailPage() {
 
           <div className="detail-actions">
             <button type="button" className="primary-button" onClick={handleToggleFavorite}>
-              {favorite ? 'Remove from favorites' : 'Add to favorites'}
+              {favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
             </button>
           </div>
         </div>
@@ -107,24 +107,24 @@ export default function SeriesDetailPage() {
       <div className="reader-panel">
         <div className="reader-controls">
           <label>
-            Reading chapter
+            Episodio
             <select value={chapterNumber} onChange={(event) => setChapterNumber(event.target.value)}>
               {series.chapters.map((chapter) => (
                 <option key={chapter.number} value={chapter.number}>
-                  Chapter {chapter.number}: {chapter.title}
+                  Episodio {chapter.number}: {chapter.title}
                 </option>
               ))}
             </select>
           </label>
 
           <button type="button" className="secondary-button" onClick={handleSaveProgress}>
-            Save progress
+            Guardar progreso
           </button>
         </div>
 
         <div className="chapter-box">
           <h3>
-            Chapter {chapterNumber}: {series.chapters.find((chapter) => chapter.number === Number(chapterNumber))?.title}
+            Episodio {chapterNumber}: {series.chapters.find((chapter) => chapter.number === Number(chapterNumber))?.title}
           </h3>
           <div className="page-list">
             {series.chapters.find((chapter) => chapter.number === Number(chapterNumber))?.pages.map((page, index) => (

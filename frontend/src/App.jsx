@@ -9,17 +9,51 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import SeriesDetailPage from './pages/SeriesDetailPage';
 import AdminPage from './pages/AdminPage';
+import NewsPage from './pages/NewsPage';
+import ReviewsPage from './pages/ReviewsPage';
 
 function AppRoutes() {
   const { user, loading } = useAuth();
-  if (loading) return <div className="loading-shell">Loading...</div>;
-  return <Routes><Route element={<Layout />}>
-    <Route path="/" element={<HomePage />} />
-    <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
-    <Route path="/register" element={user ? <Navigate to="/" replace /> : <RegisterPage />} />
-    <Route path="/series/:id" element={<SeriesDetailPage />} />
-    <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-    <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
-  </Route></Routes>;
+
+  if (loading) {
+    return <div className="loading-shell">Cargando...</div>;
+  }
+
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/anime" element={<HomePage />} />
+        <Route path="/noticias" element={<NewsPage />} />
+        <Route path="/resenas" element={<ReviewsPage />} />
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
+        <Route path="/register" element={user ? <Navigate to="/" replace /> : <RegisterPage />} />
+        <Route path="/series/:id" element={<SeriesDetailPage />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminPage />
+            </AdminRoute>
+          }
+        />
+      </Route>
+    </Routes>
+  );
 }
-export default function App() { return <AuthProvider><AppRoutes /></AuthProvider>; }
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  );
+}

@@ -22,21 +22,21 @@ export default function HomePage() {
   }, []);
 
   if (loading) {
-    return <div className="loading-shell">Loading catalog...</div>;
+    return <div className="loading-shell">Cargando catálogo de anime...</div>;
   }
 
   return (
     <section>
       <div className="hero-panel">
         <div>
-          <p className="eyebrow">Curated for readers</p>
-          <h1>Read your favorite manga and manhwa in one place.</h1>
+          <p className="eyebrow">Anime legal</p>
+          <h1>Descubre anime, noticias, reseñas y estrenos legales.</h1>
         </div>
-        <Link to="/register" className="primary-button">Create account</Link>
+        <Link to="/anime" className="primary-button">Explorar catálogo</Link>
       </div>
 
       <div className="section-header">
-        <h2>Trending series</h2>
+        <h2>Últimos estrenos</h2>
       </div>
 
       <div className="catalog-grid">
